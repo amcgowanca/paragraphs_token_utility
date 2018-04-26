@@ -1,6 +1,13 @@
 <?php
 
 /**
+ * @file
+ * A small utility module for enhancing availability of a paragraph's parent entity's tokens.
+ */
+
+use Drupal\Core\Render\BubbleableMetadata;
+
+/**
  * Implements hook_token_info_alter().
  */
 function paragraphs_token_utility_token_info_alter(&$data) {
@@ -13,7 +20,7 @@ function paragraphs_token_utility_token_info_alter(&$data) {
 /**
  * Implements hook_tokens().
  */
-function paragraphs_token_utility_tokens($type, $tokens, array $data, array $options, \Drupal\Core\Render\BubbleableMetadata $bubbleable_metadata) {
+function paragraphs_token_utility_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
   $replacements = [];
   /** @var \Drupal\paragraphs\ParagraphInterface $paragraph */
   if ($type == 'paragraph' && $paragraph = $data['paragraph']) {
