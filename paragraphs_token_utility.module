@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Implements hook_token_info_alter().
+ */
+function paragraphs_token_utility_token_info_alter(&$data) {
+  $data['tokens']['paragraph']['parent_entity'] = [
+    'name' => t('Parent entity'),
+    'description' => t('The parent entity of the paragraph.')
+  ];
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function paragraphs_token_utility_tokens($type, $tokens, array $data, array $options, \Drupal\Core\Render\BubbleableMetadata $bubbleable_metadata) {
+  $replacements = [];
+  /** @var \Drupal\paragraphs\ParagraphInterface $paragraph */
+  if ($type == 'paragraph' && $paragraph = $data['paragraph']) {
+    $parent_entity = $paragraph->getParentEntity();
+    $bubbleable_metadata->addCacheableDependency($parent_entity);
+
+    foreach ($tokens as $name => $original) {
+      if ($name == 'parent_entity') {
+        $replacements[$original] = $parent_entity->label();
+      }
+    }
+
+    $token_service = \Drupal::token();
+    if ($parent_entity_tokens = $token_service->findWithPrefix($tokens, 'parent_entity')) {
+      $replacements += $token_service->generate(
+        $parent_entity->getEntityTypeId(),
+        $parent_entity_tokens,
+        [$parent_entity->getEntityTypeId() => $parent_entity],
+        $options,
+        $bubbleable_metadata
+      );
+    }
+  }
+
+  return $replacements;
+}

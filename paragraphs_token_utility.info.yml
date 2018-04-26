@@ -1,0 +1,10 @@
+name: Paragraphs token utility
+description: A small utility module for enhancing paragraph tokens.
+package: Paragraphs
+type: module
+core: 8.x
+version: 1.0
+
+dependencies:
+  - drupal:paragraphs
+  - drupal:token
